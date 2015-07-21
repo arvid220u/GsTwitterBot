@@ -26,7 +26,7 @@ def send_tweet(tweet, in_reply_to_status_id=0):
     # if he replies with yes, send the tweet.
     # if he replies with no, don't send the tweet (generate a new one)
     # if he replies with pass, don't sendd the tweet and don't generate a new one
-    
+
     # get the most recent dm sent to me. the answer should be newer.
     check_if_requests_are_maximum(13)
     previous_reply_id = authorize().get_direct_messages(include_entities=False)[0]["id"]
@@ -34,7 +34,7 @@ def send_tweet(tweet, in_reply_to_status_id=0):
     # send the dm to arvid with the tweet
     check_if_requests_are_maximum(13)
     authorize().send_direct_message(screen_name="ArVID220u", text=tweet)
-    print "tweet in review: " + tweet
+    print("tweet in review: " + tweet)
     arvid_has_approved_or_aborted = False
     while not arvid_has_approved_or_aborted:
         check_if_requests_are_maximum(13)
@@ -42,7 +42,7 @@ def send_tweet(tweet, in_reply_to_status_id=0):
         all_dms = authorize().get_direct_messages(include_entities=False, since_id=previous_reply_id)
         response_since_gs_message = ""
         # get the last reply, make sure it's in the right conversation
-	# the last reaply is at index 0
+        # the last reaply is at index 0
         # if all_dms length is greater than 0
         if len(all_dms) > 0:
             last_message_index = 0
@@ -55,9 +55,9 @@ def send_tweet(tweet, in_reply_to_status_id=0):
                 else:
                     last_message_index += 1
                     last_message = all_dms[last_message_index]
-            print "last message: " + last_message["text"]
+            print("last message: " + last_message["text"])
             if last_message_is_arvid:
-                print "arvid's reponse: " + response_since_gs_message
+                print("arvid's reponse: " + response_since_gs_message)
                 if response_since_gs_message == "Yes":
                     # send the tweet
                     check_if_requests_are_maximum(13)
@@ -65,7 +65,7 @@ def send_tweet(tweet, in_reply_to_status_id=0):
                         authorize().update_status(status=tweet)
                     else:
                         authorize().update_status(status=tweet, in_reply_to_status_id=in_reply_to_status_id)
-                    print "sent tweet: " + tweet
+                    print("sent tweet: " + tweet)
                     arvid_has_approved_or_aborted = True
                 if response_since_gs_message == "Pass":
                     arvid_has_approved_or_aborted = True
@@ -85,13 +85,12 @@ requests_since_last_sleep = 0
 # if the requests variable isn't over limit, then increment it by one
 def check_if_requests_are_maximum(limit):
     global requests_since_last_sleep
-    print "Requests since last sleep: " + str(requests_since_last_sleep)
+    print("Requests since last sleep: " + str(requests_since_last_sleep))
     if requests_since_last_sleep >= limit:
-        print "will sleep"
+        print("will sleep")
         time.sleep(17*60)
-        print "has slept"
+        print("has slept")
         # reset requests
         requests_since_last_sleep = 0
     # increment requests
     requests_since_last_sleep += 1
-

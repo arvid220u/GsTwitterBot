@@ -1,5 +1,6 @@
 *.pyc
 apikeys.py
+__pycache__
 
 # For vim
 *.s[a-w][a-z]

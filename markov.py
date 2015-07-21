@@ -20,7 +20,7 @@ class Markov:
     # a list of the two words which have begun tweets
     beginning_words = []
     beginning_words_full_tweets = {}
-    
+
     # The initializer, which takes a list of tweets as an argument
     def __init__(self, tweet_list):
         self.tweet_list = tweet_list
@@ -37,7 +37,7 @@ class Markov:
     # from an array of tweets
     def strings_from_tweets(self, tweets):
         strings = []
-        print "parsing tweets"
+        print("parsing tweets")
         # loop through each tweet
         for tweet in tweets:
             tweet_text = tweet["text"]
@@ -50,7 +50,7 @@ class Markov:
                 tweet["text"] = tweet_text
                 strings.append(tweet)
             else:
-                print "no words in tweet: " + tweet["text"]
+                print("no words in tweet: " + tweet["text"])
         # return the list
         return strings
 
@@ -66,7 +66,7 @@ class Markov:
         # this array is used for tracking if a certain tweet has aready been parsed
         # if so, that tweet should add its beginning_words again, but not in markov_dict
         parsed_tweets = []
-        print "setting up markov dictionary"
+        print("setting up markov dictionary")
         for string in strings:
             # the text
             text = string["text"]
@@ -74,13 +74,13 @@ class Markov:
             words = text.split()
             # only add tweet words to beginning_words if lang is sv
             if string["lang"] == "sv": #no more: this excluded many swedish tweets
-            	# if number of words is less than two, then add it to the beginning
-            	# words, and continue loop
-            	if len(words) < 2:
-               	    self.beginning_words.append(words[0])
-               	    self.beginning_words_full_tweets[words[0]] = text
+                # if number of words is less than two, then add it to the beginning
+                # words, and continue loop
+                if len(words) < 2:
+                    self.beginning_words.append(words[0])
+                    self.beginning_words_full_tweets[words[0]] = text
                     continue
-                # add the first and second word to the beginnning_words list
+                # add the first and second word to the beginning words
                 self.beginning_words.append(words[0] + " " + words[1])
                 self.beginning_words_full_tweets[words[0] + " " + words[1]] = text
 
@@ -91,7 +91,7 @@ class Markov:
             # if tweet has already been parsed, end execution here
             if string in parsed_tweets:
                 #time.sleep(1)
-                print "following tweet already parsed: " + text
+                print("following tweet already parsed: " + text)
                 continue
             # the last_word and last_last_word variables will be used as the key
             # for the next word
@@ -109,17 +109,17 @@ class Markov:
                     dictionary[last_last_word + last_word].append(word)
                     # sleep so these can be read
                     #time.sleep(1)
-                    print "good markov"
-                    #print "good words: " + last_last_word + ", " + last_word
-                    #print "following words for the good words:"
-                    #print dictionary[last_last_word + last_word]
+                    print("good markov")
+                    #print("good words: " + last_last_word + ", " + last_word)
+                    #print("following words for the good words:")
+                    #print(dictionary[last_last_word + last_word])
                     #time.sleep(4)
                 else:
                     # create a list, so other words can
                     # use the same key
                     dictionary[last_last_word + last_word] = [word]
                     #time.sleep(1)
-                    print "bad"
+                    print("bad")
                 # now update last_word and last_last_word
                 last_last_word = last_word
                 last_word = word.lower()
@@ -127,12 +127,12 @@ class Markov:
             parsed_tweets.append(string)
 
         # return the dictionary
-        print "finished creating markov dictionary"
+        print("finished creating markov dictionary")
         return dictionary
-            
-            
-    
-    
+
+
+
+
     # this function will generate a tweet, based on the
     # markov dictionary. It will start with a word from
     # the beginnning_words list, and then use the dictionary
@@ -148,10 +148,10 @@ class Markov:
         tweet_has_already_been_sent = False
         while tweet_length > 140 or tweet_has_already_been_sent:
             tweet_has_already_been_sent = False
-            #print "running loop again because tweet has been sent: "
-            #print tweet_has_already_been_sent
-            #print "or because tweet length is over 140:"
-            #print tweet_length > 140
+            #print("running loop again because tweet has been sent: ")
+            #print(tweet_has_already_been_sent)
+            #print("or because tweet length is over 140:")
+            #print(tweet_length > 140)
             # get a random number, which can be used as an index
             beginning_word_index = randint(1,len(self.beginning_words)) - 1
             random_beginning_word = self.beginning_words[beginning_word_index]
@@ -173,19 +173,19 @@ class Markov:
                 # get a random word which corresponds to the key
                 possible_next_words = self.markov_dictionary[last_last_word + last_word]
                 random_index = randint(1, len(possible_next_words)) - 1
-                print "maybe index: " + str(random_index)
+                print("maybe index: " + str(random_index))
                 if len(possible_next_words) > 1:
                     for index, possible_word in enumerate(possible_next_words):
-                        print "possible word: " + possible_word
+                        print("possible word: " + possible_word)
                         if possible_word in beginning_word_tweet_words and index == random_index:
                             # new random index (is not same)
-                            print "new index"
+                            print("new index")
                             while random_index == index:
                                 random_index = randint(1, len(possible_next_words)) - 1
                 #random_index = randint(1, len(possible_next_words)) - 1
                 next_word = possible_next_words[random_index]
-                print "Available words: " + str(len(possible_next_words))
-                print "Chose #" + str(random_index) + " " + next_word
+                print("Available words: " + str(len(possible_next_words)))
+                print("Chose #" + str(random_index) + " " + next_word)
                 # add next_word to the tweet
                 tweet = tweet + " " + next_word
                 # last_word becomes last_last_word
@@ -209,17 +209,17 @@ class Markov:
             if tweet == beginning_word_tweet:
                 # run the loop again
                 tweet_has_already_been_sent = True
-                print "Nothing changed in tweet: " + tweet
+                print("Nothing changed in tweet: " + tweet)
                 time.sleep(4)
                 continue
             # always add #gs to the tweet
             tweet = tweet + " #gs"
-            print "tweet proposition: " + tweet
+            print("tweet proposition: " + tweet)
             # the tweet is generated, now update the length, so
             # it isn't longer than 140
             tweet_length = len(tweet)
-            print "tweet of length: "
-            print tweet_length
+            print("tweet of length: ")
+            print(tweet_length)
             #time.sleep(4)
             # check if this tweet already has been sent            twythonaccess.check_if_requests_are_maximum()
             twythonaccess.check_if_requests_are_maximum(170)
@@ -231,7 +231,7 @@ class Markov:
                     if tweet_from_me["text"] == tweet:
                         # this tweet has already been sent
                         tweet_has_already_been_sent = True
-                        print "already sent: " + tweet
+                        print("already sent: " + tweet)
                     else:
                         # if tweet only have less than 3 words not in common,
                         # don't send it
@@ -245,13 +245,13 @@ class Markov:
                                     common_words += 1
                         if common_words == full_length:
                             tweet_has_aleady_been_sent = True
-                            print "already sent (almost): " + tweet
+                            print("already sent (almost): " + tweet)
                 # get new all tweets, as previous may not have been all
                 twythonaccess.check_if_requests_are_maximum(170)
                 api = twythonaccess.authorize()
                 all_tweets_from_me = api.get_user_timeline(screen_name=twythonaccess.screen_name, trim_user=True, include_rts=False, count=200, max_id=all_tweets_from_me[len(all_tweets_from_me)-1]["id"]-1)
-                    
-            
+
+
         # the tweet has been generated, and is 140 characters
         # or less. Now, if tweet is shorter than 25
         # characters, add 'Gott snack: ' before it.
@@ -259,7 +259,7 @@ class Markov:
             tweet = "Gott snack: " + tweet
 
         # now tweet is generated
-        print "tweet approved: " + tweet
+        print("tweet approved: " + tweet)
         # return it
         return tweet
 
@@ -292,18 +292,18 @@ class Markov:
             # get a random word which corresponds to the key
             possible_next_words = self.markov_dictionary[last_last_word + last_word]
             random_index = randint(1, len(possible_next_words)) - 1
-            print "maybe index: " + str(random_index)
+            print("maybe index: " + str(random_index))
             if len(possible_next_words) > 1:
                 for index, possible_word in enumerate(possible_next_words):
-                    print "possible word: " + possible_word
+                    print("possible word: " + possible_word)
                     if possible_word in beginning_word_tweet_words and index == random_index:
                         # new random index (may be same)
-                        print "new index"
+                        print("new index")
                         while random_index == index:
                             random_index = randint(1, len(possible_next_words)) - 1
             next_word = possible_next_words[random_index]
-            print "Available words: " + str(len(possible_next_words))
-            print "Chose #" + str(random_index) + " " + next_word
+            print("Available words: " + str(len(possible_next_words)))
+            print("Chose #" + str(random_index) + " " + next_word)
             # add next_word to the tweet
             tweet = tweet + " " + next_word
             # last_word becomes last_last_word
@@ -324,10 +324,10 @@ class Markov:
         if tweet == beginning_word_tweet:
             # run the loop again
             tweet_has_already_been_sent = True
-            print "Nothing changed in tweet: " + tweet
+            print("Nothing changed in tweet: " + tweet)
         # always add #gs to the tweet
         tweet = tweet + " #gs"
-        print "tweet proposition: " + tweet
+        print("tweet proposition: " + tweet)
         # the tweet is generated, now update the length, so
         # it isn't longer than 140
         tweet_length = len(tweet)
@@ -341,20 +341,20 @@ class Markov:
                 if tweet_from_me["text"] == tweet:
                     # this tweet has already been sent
                     tweet_has_already_been_sent = True
-                    print "already sent: " + tweet
+                    print("already sent: " + tweet)
             # update the a tweets frm me t account for new tweets
             twythonaccess.check_if_requests_are_maximum(170)
             api = twythonaccess.authorize()
             all_tweets_from_me = api.get_user_timeline(screen_name=twythonaccess.screen_name, trim_user=True, include_rts=True, count=200, max_id=all_tweets_from_me[len(all_tweets_from_me)-1]["id"]-1)
-        
-	# the tweet has been generated. Now, if tweet is shorter than 25
+
+        # the tweet has been generated. Now, if tweet is shorter than 25
         # characters, add 'Gott snack: ' before it.
         if tweet_length < 25:
             tweet = "Gott snack: " + tweet
 
         # now tweet is generated, if nuber of characters is not over 140 and the tweet is not in
         if tweet_length < 140 and not tweet_has_already_been_sent:
-            print "tweet approved: " + tweet
+            print("tweet approved: " + tweet)
             # return it
             return tweet
         else:

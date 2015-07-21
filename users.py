@@ -28,14 +28,14 @@ class Users:
         # Get all the tweets
         self.followers_tweets = self.get_tweets(self.followers)
         self.followfollowers_tweets = self.get_tweets(self.followfollowers)
-        
+
 
     # Return followers arrays
     def get_followers_array(self):
         # get the followers array, but first check requests
         twythonaccess.check_if_requests_are_maximum(13)
         followers = twythonaccess.authorize().get_followers_list(screen_name=twythonaccess.screen_name)
-        print "gotten followers array"
+        print("gotten followers array")
         return followers["users"]
 
     def get_followfollowers_array(self):
@@ -44,25 +44,19 @@ class Users:
         # loop through each follower, and add their followers to
         # the followfollowers list
         for follower in self.followers:
-            print "getting followers for follower: " + follower["name"]
+            print("getting followers for follower: " + follower["name"])
             twythonaccess.check_if_requests_are_maximum(13)
             this_followers_follower = twythonaccess.authorize().get_followers_list(user_id=follower["id"])
             followfollowers.extend(this_followers_follower["users"])
-	
+
         # add goranhagglund to the followfollower list, because he is funny
         twythonaccess.check_if_requests_are_maximum(170)
         followfollowers.append(twythonaccess.authorize().show_user(screen_name="goranhagglund"))
 
-	"""# check if any followfollower has a language which is not sv, remove it
-        for followfollower in followfollowers:
-            if not followfollower["lang"] == "sv":
-                followfollowers.remove(followfollower)
-                time.sleep(2)
-                print "removed english follower: " + followfollower["screen_name"]
-	"""
         # check if any followfollower already is in the follower id,
         # if so, remove the follower from the followfollower array
-        """for followfollower in followfollowers:
+        """
+        for followfollower in followfollowers:
             for follower in followers:
                 if followfollower["id"] == follower["id"]:
                     followfollowers.remove(followfollower)
@@ -77,8 +71,8 @@ class Users:
     # because of the requests limit)
     def get_tweets(self, followers_array):
 
-        print "getting tweets"
-        
+        print("getting tweets")
+
         tweets = []
 
         for user in followers_array:
@@ -88,9 +82,9 @@ class Users:
                 twythonaccess.check_if_requests_are_maximum(170)
                 this_users_tweets = twythonaccess.authorize().get_user_timeline(user_id=user["id"], trim_user=True, include_rts=False)
                 tweets.extend(this_users_tweets)
-                print "got tweets of user " + user["name"]
+                print("got tweets of user " + user["name"])
             else:
-                print "user " + user["name"] + " is protected."
+                print("user " + user["name"] + " is protected.")
         # remove all tweets which are not marked as Swedish
         """for tweet in tweets:
             if tweet["lang"] != "sv":
@@ -133,7 +127,7 @@ class Users:
                         original_tweet_screenname = twythonaccess.authorize().show_user(user_id=original_tweet_userid)["screen_name"].encode(encoding='UTF-8')
 
                         # 75%, the bot will reply with a markov-generated
-                        # tweet, by first searching for a word from the tweet in markov's startwords. 
+                        # tweet, by first searching for a word from the tweet in markov's startwords.
                         # 12.5% it will reply with a variation of
                         # gs. 12.5% it will reply by citing a word and
                         # writing gs next to it.
@@ -181,7 +175,7 @@ class Users:
                                     # terminated normally, i.e. not with break
                                     continue
                                 # will break if index is below 2
-                                break 
+                                break
 
                             tweet_from_word = False
                             if best_beginning_words is not "":
@@ -191,7 +185,7 @@ class Users:
                             if not tweet_from_word:
                                 # genereate a random markov tweet
                                 reply_tweet = self.markov.generate_tweet()
-                            
+
                         elif random == 2:
                             randomm = randint(1,3)
                             if randomm == 1:
@@ -203,7 +197,7 @@ class Users:
 
                         # add @username at the beginning, and send the tweet
                         reply_tweet = "@" + original_tweet_screenname + " " + reply_tweet
-                        print "about to tweet: " + reply_tweet
+                        print("about to tweet: " + reply_tweet)
                         if len(reply_tweet) <= 140:
                             if twythonaccess.send_tweet(tweet=reply_tweet, in_reply_to_status_id=original_tweet_id):
                                 break
@@ -211,16 +205,16 @@ class Users:
         # update the self attrbutes
         self.followers_tweets = new_followers_tweets
         self.followfollowers_tweets = new_followfollowers_tweets
-                    
-    
+
+
 
     # This function gets new followers and followfollowers arrays
     # It updates the self attributes, and if there's a new user in the arrays,
     # welcomes them with a tweet
     def check_new_followers(self):
 
-        print "getting new followers"
-        
+        print("getting new followers")
+
         # The new arrays
         new_followers = self.get_followers_array()
         new_followfollowers = self.get_followfollowers_array()
@@ -249,7 +243,7 @@ class Users:
                     # compose the tweet
                     tweet = "Ny följare idag: @" + new_follower['screen_name'].encode(encoding='UTF-8') + ". " + adjective + " gs."
                     if twythonaccess.send_tweet(tweet):
-                        print "greeting new follower with tweet: " + tweet
+                        print("greeting new follower with tweet: " + tweet)
                         # Also add this user's tweets to the tweets array,
                         # so the bot won't answer all of the user's tweets
                         twythonaccess.check_if_requests_are_maximum(170)
