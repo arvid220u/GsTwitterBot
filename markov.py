@@ -437,9 +437,19 @@ class Markov:
                     reply_tweet = "gs"
                 elif randomm == 3:
                     reply_tweet = "Gott snack."
-                    
-            # add @username at the beginning, and send the tweet
-            reply_tweet = "@" + original_tweet_screenname + " " + reply_tweet
+            
+            # collect all usernames in a list. this is to reply to all users in a multi-user conversation
+            reply_usernames = []
+            for mention_object in to_tweet["user_mentions"]:
+                reply_usernames.append("@" + mention_object[screen_name])
+            # if the author of the original tweet isn't in the list, add him/her to it
+            if ("@" + original_tweet_screenname) not in reply_usernames:
+                reply_usernames.append("@" + original_tweet_screenname)
+            # make a space separated string from the list
+            reply_usernames_string = " ".join(reply_usernames)
+
+            # add all @usernames at the beginning, and send the tweet
+            reply_tweet = reply_usernames_string + " " + reply_tweet
             print("about to tweet: " + reply_tweet)
             if len(reply_tweet) <= 140:
                 if twythonaccess.send_tweet(tweet=reply_tweet, in_reply_to_status_id=original_tweet_id):
