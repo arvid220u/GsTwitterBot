@@ -6,6 +6,10 @@ import time
 from users import Users
 # import markov
 from markov import Markov
+# import fastreplystreamer
+from fastreplystreamer import FastReplyStreamer
+# import apikeys to authenticate streamer
+import apikeys
 
 # temp sleep
 #time.sleep(60*60*11)
@@ -40,6 +44,16 @@ users.markov = markov
 
 
 print("setup complete")
+
+print("starting registering for streaming api")
+# initialize the fastreplystreamer
+streamer = FastReplyStreaner(apikeys.CONSUMER_KEY, apikeys.CONSUMER_SECRET, apikeys.ACCESS_TOKEN, apikeys.ACCESS_TOKEN_SECRET) 
+# pass this markov instance to the streamer, so it will be able to generate replies
+streamer.markov = markov
+# start the filter
+streamer.statuses.filter(track=("@" + twythonaccess.screen_name))
+print("finished registering for streaming api")
+
 
 # the run loop, which in the future will continue in infinity
 while True:
