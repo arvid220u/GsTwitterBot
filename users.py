@@ -204,8 +204,9 @@ class Users:
                         # add @username at the beginning, and send the tweet
                         reply_tweet = "@" + original_tweet_screenname + " " + reply_tweet
                         print "about to tweet: " + reply_tweet
-                        if twythonaccess.send_tweet(tweet=reply_tweet, in_reply_to_status_id=original_tweet_id):
-                            break
+                        if len(reply_tweet) <= 140:
+                            if twythonaccess.send_tweet(tweet=reply_tweet, in_reply_to_status_id=original_tweet_id):
+                                break
 
         # update the self attrbutes
         self.followers_tweets = new_followers_tweets

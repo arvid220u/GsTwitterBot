@@ -2,4 +2,4 @@
 apikeys.py
 
 # For vim
-[._]*.s[a-w][a-z]
+*.s[a-w][a-z]

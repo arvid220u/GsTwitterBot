@@ -10,11 +10,7 @@ from twython import Twython
 import apikeys
 
 
-# Get all the keys for the GsMarkovReplier app on the GsGottsnack account
-#CONSUMER_KEY = '8MrS7nG1eG33Lt1jZXZUgYHfn'#'b6Fh8O3ZiWH8NGgVQcFspUNKw8MrS7nG1eG33Lt1jZXZUgYHfn'
-#CONSUMER_SECRET = 'F25sNhnyjD9vIjyYz1hFk0YuLwX2ZKvN0qQmuijjpXqqrUdJqI'#'TZAtcy5PkK0Sm0lWYhnrdQbIfmP90HOvi6ZqaHZRaY5oqeUz9K'
-#ACCESS_TOKEN= '2730134586-JWMzTfPCGoTt8YxK96yYbQ8livtmrHpXXaylJTS'#'2730134586-BswBNnx0X4uVYZJTp81GpIV5v6ETX07TKz2ZSmu'
-#ACCESS_TOKEN_SECRET = 'cLfLccU5qd1rsTA0oq8LBCG1NmBdafiUZHV7RTLlBjQNL'#'SYxQXehlAMKruamriEpfdJEgJeXehsbrIvslJYGDgm70acTlwW3hkb0l6Fdm8fWy5kkTomJxv0s50WS1vy0rgily7e'
+
 
 # The api variable is the way to access the api
 def authorize():

@@ -73,19 +73,21 @@ class Markov:
             # get an array of all the words in the string
             words = text.split()
             # only add tweet words to beginning_words if lang is sv
-            #if string["lang"] == "sv": #no more: this excluded many swedish tweets
-            # if number of words is less than two, then add it to the beginning
-            # words, and continue loop
+            if string["lang"] == "sv": #no more: this excluded many swedish tweets
+            	# if number of words is less than two, then add it to the beginning
+            	# words, and continue loop
+            	if len(words) < 2:
+               	    self.beginning_words.append(words[0])
+               	    self.beginning_words_full_tweets[words[0]] = text
+                    continue
+                # add the first and second word to the beginnning_words list
+                self.beginning_words.append(words[0] + " " + words[1])
+                self.beginning_words_full_tweets[words[0] + " " + words[1]] = text
+
+            # If number of words is less than two, continue loop
             if len(words) < 2:
-                self.beginning_words.append(words[0])
-                self.beginning_words_full_tweets[words[0]] = text
                 continue
-            # add the first and second word to the beginnning_words list
-            self.beginning_words.append(words[0] + " " + words[1])
-            self.beginning_words_full_tweets[words[0] + " " + words[1]] = text
-            # if tweet is short, then continue loop
-            #if len(words) < 2:
-                #continue # this is done above
+
             # if tweet has already been parsed, end execution here
             if string in parsed_tweets:
                 #time.sleep(1)
@@ -164,7 +166,10 @@ class Markov:
                 last_word = last_words[1].lower()
             # add words to the tweet, while last_word + last_last_word exists in
             # markov_dictionary
-            while last_last_word + last_word in self.markov_dictionary:
+            # prevent an endless loopby setting the maximum number of cycles to 140. This means the tweet will get 142 words long by maximum, which by fact is over 140 characters.
+            maximum_cycles = 140
+            current_cycle = 1
+            while last_last_word + last_word in self.markov_dictionary and current_cycle < maximum_cycles:
                 # get a random word which corresponds to the key
                 possible_next_words = self.markov_dictionary[last_last_word + last_word]
                 random_index = randint(1, len(possible_next_words)) - 1
@@ -187,6 +192,9 @@ class Markov:
                 last_last_word = last_word
                 # next_word becomes last_word
                 last_word = next_word.lower()
+                # update the current_cycle
+                current_cycle += 1
+
             # 1/75 of all tweets shuld have all letters uppercase
             if randint(1, 75) == 2:
                 tweet = tweet.upper()
@@ -270,10 +278,10 @@ class Markov:
         #while tweet_length > 140 or tweet_has_already_been_sent:
         # init with the chosen word
         tweet = chosen_beginning_words
-        beginning_word_tweet = self.beginning_words_full_tweets[chosen_beginning_word]
+        beginning_word_tweet = self.beginning_words_full_tweets[chosen_beginning_words]
         beginning_word_tweet_words = beginning_word_tweet.split()
         # the last_word and last_last_word will be used access the next word
-        last_words = chosen_beginning_word.split()
+        last_words = chosen_beginning_words.split()
         last_last_word = last_words[0].lower()
         last_word = ""
         if len(last_words) > 1:
