@@ -47,7 +47,7 @@ print("setup complete")
 
 print("starting registering for streaming api")
 # initialize the fastreplystreamer
-streamer = FastReplyStreaner(apikeys.CONSUMER_KEY, apikeys.CONSUMER_SECRET, apikeys.ACCESS_TOKEN, apikeys.ACCESS_TOKEN_SECRET) 
+streamer = FastReplyStreamer(apikeys.CONSUMER_KEY, apikeys.CONSUMER_SECRET, apikeys.ACCESS_TOKEN, apikeys.ACCESS_TOKEN_SECRET) 
 # pass this markov instance to the streamer, so it will be able to generate replies
 streamer.markov = markov
 # start the filter
