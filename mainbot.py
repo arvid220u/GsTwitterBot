@@ -65,7 +65,6 @@ while True:
     print("will sleep for 25 hours")
     time.sleep(60 * 60 * 25)
     print("has slept for 25 hours")
-    # TEMPORARILY DISABLED
 
     # update the users followers
     users.check_new_followers()
