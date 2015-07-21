@@ -116,8 +116,12 @@ class Users:
                 # only answer 50% of tweets, or if there was a mention of gs
                 random_number = randint(1,2)
                 if (random_number == 1 and new_followers_tweet["user"]["id"] not in answered_users_ids) or "gs" in new_followers_tweet["text"].encode(encoding="UTF-8"):
-                    # reply to the tweet
-                    self.markov.generate_reply(to_tweet=new_followers_tweet)
+                    # if @gsgottsnack is contained in the tweet, then don't reply here, as that will be taken care of in FastReplyStreamer
+                    if not "@gsgottsnack" in new_followers_tweet["text"].encode(encoding="UTF-8"):
+                        # don't reply to the same user twice if no gs
+                        answered_users_ids.append(new_followers_tweet["user"]["id"])
+                        # reply to the tweet
+                        self.markov.generate_reply(to_tweet=new_followers_tweet)
 
         # update the self attrbutes
         self.followers_tweets = new_followers_tweets
