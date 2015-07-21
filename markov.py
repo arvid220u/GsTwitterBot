@@ -348,8 +348,8 @@ class Markov:
             all_tweets_from_me = api.get_user_timeline(screen_name=twythonaccess.screen_name, trim_user=True, include_rts=True, count=200, max_id=all_tweets_from_me[len(all_tweets_from_me)-1]["id"]-1)
 
         # the tweet has been generated. Now, if tweet is shorter than 25
-        # characters, add 'Gott snack: ' before it.
-        if tweet_length < 25:
+        # characters, add 'Gott snack: ' before it (in some cases).
+        if tweet_length < 25 and randint(1,4) == 2:
             tweet = "Gott snack: " + tweet
 
         # now tweet is generated, if nuber of characters is not over 140 and the tweet is not in
