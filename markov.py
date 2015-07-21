@@ -441,8 +441,8 @@ class Markov:
             # collect all usernames in a list. this is to reply to all users in a multi-user conversation
             reply_usernames = []
             for mention_object in to_tweet["user_mentions"]:
-                if mention_object["screen_name"] is not twythonaccess.screen_name
-                reply_usernames.append("@" + mention_object["screen_name"])
+                if mention_object["screen_name"] is not twythonaccess.screen_name:
+                    reply_usernames.append("@" + mention_object["screen_name"])
             # if the author of the original tweet isn't in the list, add him/her to it
             if ("@" + original_tweet_screenname) not in reply_usernames:
                 reply_usernames.append("@" + original_tweet_screenname)
