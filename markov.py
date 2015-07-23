@@ -362,14 +362,14 @@ class Markov:
     
     
     # This function generates a reply to the tweet specified
-    def generate_reply(to_tweet):
+    def generate_reply(self, to_tweet):
         while True:
             original_tweet_id = to_tweet["id"]
-            original_tweet_text = to_tweet["text"].encode(encoding='UTF-8')
+            original_tweet_text = to_tweet["text"]
             original_tweet_userid = to_tweet["user"]["id"]
             # get the screen name
             twythonaccess.check_if_requests_are_maximum(170)
-            original_tweet_screenname = twythonaccess.authorize().show_user(user_id=original_tweet_userid)["screen_name"].encode(encoding='UTF-8')
+            original_tweet_screenname = twythonaccess.authorize().show_user(user_id=original_tweet_userid)["screen_name"]
             
             # 75%, the bot will reply with a markov-generated
             # tweet, by first searching for a word from the tweet in markov's startwords.
@@ -400,7 +400,7 @@ class Markov:
                 # set to dummy value of 100
                 match_index = 100
                 # loop over each key and value in beginning_words_full_tweets
-                for beginning_words, full_tweet in self.beginning_words_full_tweets.iteritems():
+                for beginning_words, full_tweet in self.beginning_words_full_tweets.items():
                     # create a list from a lowercase version of the tweet
                     tweet_words = full_tweet.lower().split()
                     for index, word in enumerate(tweet_words):
@@ -440,11 +440,14 @@ class Markov:
             
             # collect all usernames in a list. this is to reply to all users in a multi-user conversation
             reply_usernames = []
-            for mention_object in to_tweet["user_mentions"]:
-                if mention_object["screen_name"] is not twythonaccess.screen_name:
+            for mention_object in to_tweet["entities"]["user_mentions"]:
+                if mention_object["screen_name"] != twythonaccess.screen_name:
+                    print(mention_object["screen_name"])
+                    print(twythonaccess.screen_name)
                     reply_usernames.append("@" + mention_object["screen_name"])
             # if the author of the original tweet isn't in the list, add him/her to it
-            if ("@" + original_tweet_screenname) not in reply_usernames:
+            original_tweet_screenname_at = "@" + original_tweet_screenname
+            if original_tweet_screenname_at not in reply_usernames:
                 reply_usernames.append("@" + original_tweet_screenname)
             # make a space separated string from the list
             reply_usernames_string = " ".join(reply_usernames)

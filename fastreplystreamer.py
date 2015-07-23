@@ -9,7 +9,7 @@ class FastReplyStreamer(TwythonStreamer):
     def on_success(self, data):
         # the data variables contains a tweet
         # reply to that tweet
-        self.markov.generate_reply(to_tweet=data)
+        self.markov.generate_reply(to_tweet = data)
 
     # when an error is caught
     def on_error(self, status_code, data):

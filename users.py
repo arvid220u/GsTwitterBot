@@ -115,9 +115,9 @@ class Users:
             if new_followers_tweet["id"] not in old_tweets_ids:
                 # only answer 50% of tweets, or if there was a mention of gs
                 random_number = randint(1,2)
-                if (random_number == 1 and new_followers_tweet["user"]["id"] not in answered_users_ids) or "gs" in new_followers_tweet["text"].encode(encoding="UTF-8"):
+                if (random_number == 1 and new_followers_tweet["user"]["id"] not in answered_users_ids) or "gs" in new_followers_tweet["text"]:
                     # if @gsgottsnack is contained in the tweet, then don't reply here, as that will be taken care of in FastReplyStreamer
-                    if not "@gsgottsnack" in new_followers_tweet["text"].encode(encoding="UTF-8"):
+                    if not "@gsgottsnack" in new_followers_tweet["text"]:
                         # don't reply to the same user twice if no gs
                         answered_users_ids.append(new_followers_tweet["user"]["id"])
                         # reply to the tweet
@@ -162,7 +162,7 @@ class Users:
                         # 25%
                         adjective = "Lite"
                     # compose the tweet
-                    tweet = "Ny följare idag: @" + new_follower['screen_name'].encode(encoding='UTF-8') + ". " + adjective + " gs."
+                    tweet = "Ny följare idag: @" + new_follower['screen_name'] + ". " + adjective + " gs."
                     if twythonaccess.send_tweet(tweet):
                         print("greeting new follower with tweet: " + tweet)
                         # Also add this user's tweets to the tweets array,
