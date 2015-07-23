@@ -26,6 +26,24 @@ def send_tweet(tweet, in_reply_to_status_id=0):
     # if he replies with yes, send the tweet.
     # if he replies with no, don't send the tweet (generate a new one)
     # if he replies with pass, don't sendd the tweet and don't generate a new one
+    
+    # REMOVING CONFIRMATION VIA DM, BECAUSE TWEET GENERATION HAS A HIGH LOWEST QUALITY NOW
+    
+    # send tweet
+    check_if_requests_are_maximum(13)
+    # maybe send it in reply to another tweet
+    if in_reply_to_status_id == 0:
+        # standalone tweet
+        authorize().update_status(status=tweet)
+    else:
+        # tweet is a reply
+        authorize().update_status(status=tweet, in_reply_to_status_id=in_reply_to_status_id)
+    print("sent tweet: " + tweet)
+
+    # RETURN TRUE HERE SO DM WON'T BE SENT. TRUST GSGOTTSNACK.
+    return True
+    
+
 
     # get the most recent dm sent to me. the answer should be newer.
     check_if_requests_are_maximum(13)
@@ -88,7 +106,7 @@ def check_if_requests_are_maximum(limit):
     print("Requests since last sleep: " + str(requests_since_last_sleep))
     if requests_since_last_sleep >= limit:
         print("will sleep")
-        time.sleep(17*60)
+        time.sleep(16*60)
         print("has slept")
         # reset requests
         requests_since_last_sleep = 0
