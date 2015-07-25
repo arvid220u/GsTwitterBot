@@ -22,7 +22,15 @@ from random import randint
 def main():
 
     # first setup users and markov objects
-    setup()
+    # set this up with error handling
+    while True:
+        try:
+            setup()
+            break
+        except Exception as exception:
+            print(exception)
+            time.sleep(15*60)
+            print("exception sleep in setup now finished; retrying setup")
     
     # create two threads, which will call reply_streamer and tweet_loop
     # use threads to make these threads be able to run concurrently
@@ -51,14 +59,11 @@ def setup():
     #markov = Markov(users.followers_tweets + users.followfollowers_tweets)
 
     # do this instead: mix the followers' tweets with tweets from goranhagglund and rossa_d
-    ghAndRd = ["goranhagglund", "rossa_d"]
-    ghAndRdTweets = []
-    for screen_name in ghAndRd:
-        twythonaccess.check_if_requests_are_maximum(170)
-        this_users_tweets = twythonaccess.authorize().get_user_timeline(screen_name=screen_name, trim_user=True, include_rts=False)
-        ghAndRdTweets.extend(this_users_tweets)
-        print("a tweet from " + screen_name + ": " + this_users_tweets[0]["text"])
-        time.sleep(5)
+    twythonaccess.check_if_requests_are_maximum(170)
+    twythonaccess.check_if_requests_are_maximum(170)
+    ghAndRdTweets = users.get_tweets([
+        twythonaccess.authorize().show_user(screen_name="goranhagglund"),
+        twythonaccess.authorize().show_user(screen_name="rossa_d")])
 
     markov = Markov(users.followers_tweets + ghAndRdTweets + users.followfollowers_tweets)
     print("initialized markov")
@@ -68,7 +73,6 @@ def setup():
 
 
     print("setup complete")
-
 
 
 

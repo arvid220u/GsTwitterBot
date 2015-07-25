@@ -24,7 +24,6 @@ class Users:
         # Initialize the follower arrays
         self.followers = self.get_followers_array()
         self.followfollowers = self.get_followfollowers_array()
-        #self.followfollowfollowers = self.getFollowfollowfollowersArray()
         # Get all the tweets
         self.followers_tweets = self.get_tweets(self.followers)
         self.followfollowers_tweets = self.get_tweets(self.followfollowers)
@@ -49,9 +48,6 @@ class Users:
             this_followers_follower = twythonaccess.authorize().get_followers_list(user_id=follower["id"])
             followfollowers.extend(this_followers_follower["users"])
 
-        # add goranhagglund to the followfollower list, because he is funny
-        twythonaccess.check_if_requests_are_maximum(170)
-        followfollowers.append(twythonaccess.authorize().show_user(screen_name="goranhagglund"))
 
         # check if any followfollower already is in the follower id,
         # if so, remove the follower from the followfollower array
