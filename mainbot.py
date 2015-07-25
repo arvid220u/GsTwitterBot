@@ -101,11 +101,29 @@ def tweet_loop():
 
         # sleeping point, if need for sleep
         # sleep for one day
-        # will be a total delay between tweets at around 24.1 hours, which is good
-        # Decrease this sleep amout as new followers are gathered
-        print("will sleep for 25 hours")
-        time.sleep(60 * 60 * 25)
-        print("has slept for 25 hours")
+        # make the sleep somewhat randomized
+        # can range from 5 minutes to 3 days
+        # make the distribution curve peak at 24 hours
+        # get a random integer between 5 and 2.25*24*60, representing minutes
+        # then run the evening loop below 2 times
+        min_sleep = 5
+        max_sleep = 2.25*24*60
+        sleep_minutes = randint(min_sleep, max_sleep)
+        for i in randint(1,3):
+            # if the value isn't in the specified range, then regenerate the value
+            # this will increase the statistical probability of the value falling in the range, while not limiting the value directly
+            # first limit the value in a close range, then in a bigger range, order is important
+            # this will make the curve like a double-sided stairway with three levels, the middle level being the widest
+            if sleep_minutes < 23*60 or sleep_minutes > 27*60:
+                sleep_minutes = randint(min_sleep, max_sleep)
+        # second loop, wider, designed to catch almost all values
+        for i in randint(1,3):
+            if sleep_minutes < 5*60 or sleep_minutes > 48*60:
+                sleep_minutes = randint(min_sleep, max_sleep)
+
+        print("will sleep for " + str(sleep_minutes) + " minutes")
+        time.sleep(sleep_minutes * 60)
+        print("has slept for " + str(sleep_minutes) + " minutes")
 
         # update the users followers
         users.check_new_followers()
