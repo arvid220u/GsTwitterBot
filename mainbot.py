@@ -105,11 +105,11 @@ def tweet_loop():
         # can range from 5 minutes to 3 days
         # make the distribution curve peak at 24 hours
         # get a random integer between 5 and 2.25*24*60, representing minutes
-        # then run the evening loop below 2 times
+        # based on calculations, do first loop 5 times and second loop once
         min_sleep = 5
         max_sleep = 2.25*24*60
         sleep_minutes = randint(min_sleep, max_sleep)
-        for i in randint(1,3):
+        for i in range(0,4):
             # if the value isn't in the specified range, then regenerate the value
             # this will increase the statistical probability of the value falling in the range, while not limiting the value directly
             # first limit the value in a close range, then in a bigger range, order is important
@@ -117,7 +117,7 @@ def tweet_loop():
             if sleep_minutes < 23*60 or sleep_minutes > 27*60:
                 sleep_minutes = randint(min_sleep, max_sleep)
         # second loop, wider, designed to catch almost all values
-        for i in randint(1,3):
+        for i in range(0,1):
             if sleep_minutes < 5*60 or sleep_minutes > 48*60:
                 sleep_minutes = randint(min_sleep, max_sleep)
 
