@@ -18,17 +18,37 @@ from threading import Thread
 # the main function will be called when this script is called in terminal
 # the bash command "python3 mainbot.py" will call this function
 def main():
-    # first setup users and markov objects
-    setup()
-    
-    # create two threads, which will call reply_streamer and tweet_loop
-    # use threads to make these threads be able to run concurrently
-    reply_streamer_thread = Thread(target = reply_streamer)
-    tweet_loop_thread = Thread(target = tweet_loop)
-    # start both threads
-    reply_streamer_thread.start()
-    tweet_loop_thread.start()
-    # these threads will run infinitely
+
+    # make error handling simple:
+    # if there's any error anywhere, catch it at this top level
+    # this makes the code not spoilt with try/except clauses everywhere
+    # however, it also catches keyboardinterrupt and type errors
+    # if error handling is needed at a deeper level somewhere, that is possible
+    # wrap it all in a while true loop, so the program will start over at any errors
+    while True:
+        try:
+
+            # first setup users and markov objects
+            setup()
+            
+            # create two threads, which will call reply_streamer and tweet_loop
+            # use threads to make these threads be able to run concurrently
+            reply_streamer_thread = Thread(target = reply_streamer)
+            tweet_loop_thread = Thread(target = tweet_loop)
+            # start both threads
+            reply_streamer_thread.start()
+            tweet_loop_thread.start()
+            # these threads will run infinitely
+
+        except Exception as exception:
+            # print the exception
+            print(exception)
+
+            # wait for 1 hour, so as to avoid rate limiting, or servers down
+            time.sleep(60*60)
+            # now program will start over
+            print("Restarting program...")
+
 
 
 # create the global markov and users instances
