@@ -115,92 +115,13 @@ class Users:
             if new_followers_tweet["id"] not in old_tweets_ids:
                 # only answer 50% of tweets, or if there was a mention of gs
                 random_number = randint(1,2)
-                if (random_number == 1 and new_followers_tweet["user"]["id"] not in answered_users_ids) or "gs" in new_followers_tweet["text"].encode(encoding="UTF-8"):
-                    while True:
+                if (random_number == 1 and new_followers_tweet["user"]["id"] not in answered_users_ids) or "gs" in new_followers_tweet["text"]:
+                    # if @gsgottsnack is contained in the tweet, then don't reply here, as that will be taken care of in FastReplyStreamer
+                    if not "@gsgottsnack" in new_followers_tweet["text"]:
+                        # don't reply to the same user twice if no gs
+                        answered_users_ids.append(new_followers_tweet["user"]["id"])
                         # reply to the tweet
-                        original_tweet_id = new_followers_tweet["id"]
-                        original_tweet_text = new_followers_tweet["text"].encode(encoding='UTF-8')
-                        original_tweet_userid = new_followers_tweet["user"]["id"]
-                        answered_users_ids.append(original_tweet_userid)
-                        # get the screen name
-                        twythonaccess.check_if_requests_are_maximum(170)
-                        original_tweet_screenname = twythonaccess.authorize().show_user(user_id=original_tweet_userid)["screen_name"].encode(encoding='UTF-8')
-
-                        # 75%, the bot will reply with a markov-generated
-                        # tweet, by first searching for a word from the tweet in markov's startwords.
-                        # 12.5% it will reply with a variation of
-                        # gs. 12.5% it will reply by citing a word and
-                        # writing gs next to it.
-                        reply_tweet = ''
-                        random = randint(1,8)
-                        if random == 1:
-                            # cite word
-                            original_tweet_words = original_tweet_text.split()
-                            random_word_index = randint(1, len(original_tweet_words)) - 1
-                            random_word = original_tweet_words[random_word_index]
-                            randomm = randint(1,3)
-                            if randomm == 1:
-                                reply_tweet = '"' + random_word + '". gs'
-                            elif randomm == 2:
-                                reply_tweet = 'Gott snack: "' + random_word + '"'
-                            elif randomm == 3:
-                                reply_tweet = '"' + random_word + '" ...gs'
-                        elif random > 2:
-                            # generate a tweet with a word from the original tweet
-                            original_tweet_words = original_tweet_text.lower().split()
-                            # this str contains the currently best beginning_words
-                            best_beginning_words = ""
-                            # the ranking is based on where the word match is found
-                            # the earlier the better, because then there is a higher chance of the actual word showing up in the actual tweet
-                            # set to dummy value of 100
-                            match_index = 100
-                            # loop over each key and value in beginning_words_full_tweets
-                            for beginning_words, full_tweet in self.markov.beginning_words_full_tweets.iteritems():
-                                # create a list from a lowercase version of the tweet
-                                tweet_words = full_tweet.lower().split()
-                                for index, word in enumerate(tweet_words):
-                                    if word in original_tweet_words:
-                                        # match is found, at index index
-                                        # check if index is lower than match_index
-                                        if index < match_index:
-                                            best_beginning_words = beginning_words
-                                            match_index = index
-                                            # if index is zero or one,
-                                            # there is no need to search anyore
-                                            # therefore, break the loop
-                                            if index < 2:
-                                                break
-                                else:
-                                    # this is executed if the loop of the words
-                                    # terminated normally, i.e. not with break
-                                    continue
-                                # will break if index is below 2
-                                break
-
-                            tweet_from_word = False
-                            if best_beginning_words is not "":
-                                reply_tweet = self.markov.generate_tweet_with_beginning_word(best_beginning_words)
-                                if reply_tweet is not None:
-                                    tweet_from_word = True
-                            if not tweet_from_word:
-                                # genereate a random markov tweet
-                                reply_tweet = self.markov.generate_tweet()
-
-                        elif random == 2:
-                            randomm = randint(1,3)
-                            if randomm == 1:
-                                reply_tweet = "Ganska gs."
-                            elif randomm == 2:
-                                reply_tweet = "gs"
-                            elif randomm == 3:
-                                reply_tweet = "Gott snack."
-
-                        # add @username at the beginning, and send the tweet
-                        reply_tweet = "@" + original_tweet_screenname + " " + reply_tweet
-                        print("about to tweet: " + reply_tweet)
-                        if len(reply_tweet) <= 140:
-                            if twythonaccess.send_tweet(tweet=reply_tweet, in_reply_to_status_id=original_tweet_id):
-                                break
+                        self.markov.generate_reply(to_tweet=new_followers_tweet)
 
         # update the self attrbutes
         self.followers_tweets = new_followers_tweets
@@ -241,7 +162,7 @@ class Users:
                         # 25%
                         adjective = "Lite"
                     # compose the tweet
-                    tweet = "Ny följare idag: @" + new_follower['screen_name'].encode(encoding='UTF-8') + ". " + adjective + " gs."
+                    tweet = "Ny följare idag: @" + new_follower['screen_name'] + ". " + adjective + " gs."
                     if twythonaccess.send_tweet(tweet):
                         print("greeting new follower with tweet: " + tweet)
                         # Also add this user's tweets to the tweets array,

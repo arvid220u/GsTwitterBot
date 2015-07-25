@@ -359,3 +359,102 @@ class Markov:
             return tweet
         else:
             return None
+    
+    
+    # This function generates a reply to the tweet specified
+    def generate_reply(self, to_tweet):
+        while True:
+            original_tweet_id = to_tweet["id"]
+            original_tweet_text = to_tweet["text"]
+            original_tweet_userid = to_tweet["user"]["id"]
+            # get the screen name
+            twythonaccess.check_if_requests_are_maximum(170)
+            original_tweet_screenname = twythonaccess.authorize().show_user(user_id=original_tweet_userid)["screen_name"]
+            
+            # 75%, the bot will reply with a markov-generated
+            # tweet, by first searching for a word from the tweet in markov's startwords.
+            # 12.5% it will reply with a variation of
+            # gs. 12.5% it will reply by citing a word and
+            # writing gs next to it.
+            reply_tweet = ''
+            random = randint(1,8)
+            if random == 1:
+                # cite word
+                original_tweet_words = original_tweet_text.split()
+                random_word_index = randint(1, len(original_tweet_words)) - 1
+                random_word = original_tweet_words[random_word_index]
+                randomm = randint(1,3)
+                if randomm == 1:
+                    reply_tweet = '"' + random_word + '". gs'
+                elif randomm == 2:
+                    reply_tweet = 'Gott snack: "' + random_word + '"'
+                elif randomm == 3:
+                    reply_tweet = '"' + random_word + '" ...gs'
+            elif random > 2:
+                # generate a tweet with a word from the original tweet
+                original_tweet_words = original_tweet_text.lower().split()
+                # this str contains the currently best beginning_words
+                best_beginning_words = ""
+                # the ranking is based on where the word match is found
+                # the earlier the better, because then there is a higher chance of the actual word showing up in the actual tweet
+                # set to dummy value of 100
+                match_index = 100
+                # loop over each key and value in beginning_words_full_tweets
+                for beginning_words, full_tweet in self.beginning_words_full_tweets.items():
+                    # create a list from a lowercase version of the tweet
+                    tweet_words = full_tweet.lower().split()
+                    for index, word in enumerate(tweet_words):
+                        if word in original_tweet_words:
+                            # match is found, at index index
+                            # check if index is lower than match_index
+                            if index < match_index:
+                                best_beginning_words = beginning_words
+                                match_index = index
+                                # if index is zero or one,
+                                # there is no need to search anyore
+                                # therefore, break the loop
+                                if index < 2:
+                                    break
+                    else:
+                        # this is executed if the loop of the words
+                        # terminated normally, i.e. not with break
+                        continue
+                    # will break if index is below 2
+                    break
+                tweet_from_word = False
+                if best_beginning_words is not "":
+                    reply_tweet = self.generate_tweet_with_beginning_word(best_beginning_words)
+                    if reply_tweet is not None:
+                        tweet_from_word = True
+                if not tweet_from_word:
+                    # genereate a random markov tweet
+                    reply_tweet = self.generate_tweet()
+            elif random == 2:
+                randomm = randint(1,3)
+                if randomm == 1:
+                    reply_tweet = "Ganska gs."
+                elif randomm == 2:
+                    reply_tweet = "gs"
+                elif randomm == 3:
+                    reply_tweet = "Gott snack."
+            
+            # collect all usernames in a list. this is to reply to all users in a multi-user conversation
+            reply_usernames = []
+            for mention_object in to_tweet["entities"]["user_mentions"]:
+                if mention_object["screen_name"] != twythonaccess.screen_name:
+                    print(mention_object["screen_name"])
+                    print(twythonaccess.screen_name)
+                    reply_usernames.append("@" + mention_object["screen_name"])
+            # if the author of the original tweet isn't in the list, add him/her to it
+            original_tweet_screenname_at = "@" + original_tweet_screenname
+            if original_tweet_screenname_at not in reply_usernames:
+                reply_usernames.append("@" + original_tweet_screenname)
+            # make a space separated string from the list
+            reply_usernames_string = " ".join(reply_usernames)
+
+            # add all @usernames at the beginning, and send the tweet
+            reply_tweet = reply_usernames_string + " " + reply_tweet
+            print("about to tweet: " + reply_tweet)
+            if len(reply_tweet) <= 140:
+                if twythonaccess.send_tweet(tweet=reply_tweet, in_reply_to_status_id=original_tweet_id):
+                    break
