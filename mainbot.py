@@ -29,7 +29,8 @@ def main():
             break
         except Exception as exception:
             print(exception)
-            time.sleep(15*60)
+            print("will sleep for 1 hour to avoid exception")
+            time.sleep(60*60)
             print("exception sleep in setup now finished; retrying setup")
     
     # create two threads, which will call reply_streamer and tweet_loop
@@ -96,6 +97,7 @@ def reply_streamer():
             # if twitter's servers were down, they may be up after the sleep
             # after the sleep, the filter function will be called anew
             print(exception)
+            print("will sleep for 1 hour to avoid exception")
             time.sleep(60*60)
             print("finished sleep after exception in streaming api. will now start anew")
 
@@ -191,6 +193,7 @@ def tweet_loop():
             # the exception may be a rate limit, or it may be due to twitter's servers being down
             # either way, a sleep will help
             print(exception)
+            print("will sleep for 1 hour to avoid exception")
             time.sleep(60*60)
             print("finished exception sleep; will resume tweet generation loop as normal")
 
