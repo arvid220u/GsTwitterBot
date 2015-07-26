@@ -13,6 +13,10 @@ Should support all python 3+ versions. It may run on python 2.x, but there will 
 
 Has only been tested to work on python 3.2
 
+## Dependencies
+
+Currently relies on [Twython](https://github.com/ryanmcgrath/twython) for connecting to the Twitter APIs in an effortless way.
+
 ## Project status
 * GsTwitterBot is actively developed by @ArVID220u as a side project, irregularly.
 * GsTwitterBot is not in a release-state yet. This means that there are many unstable commits in-between the stable ones. Stable versions may be marked as 'stable' in the commit message. GsTwitterBot will, sometime in the future, be release-ready.
