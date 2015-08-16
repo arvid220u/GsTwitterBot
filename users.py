@@ -3,7 +3,7 @@
 # checks if there are any new followers
 import time
 # import the twython api
-import twythonaccess
+from . import twythonaccess
 
 # import random, so every follower_greeting is not always the same
 from random import randint

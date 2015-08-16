@@ -3,7 +3,7 @@ import re
 # import randint
 from random import randint
 # import the twython api, for not sending the same tweet twice
-import twythonaccess
+from . import twythonaccess
 # import time for testing
 import time
 

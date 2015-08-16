@@ -1,15 +1,15 @@
 # Import the twython module
-import twythonaccess
+from . import twythonaccess
 # import time and sys
 import time
 # import the users class
-from users import Users
+from .users import Users
 # import markov
-from markov import Markov
+from .markov import Markov
 # import fastreplystreamer
-from fastreplystreamer import FastReplyStreamer
+from .fastreplystreamer import FastReplyStreamer
 # import apikeys to authenticate streamer
-import apikeys
+from . import apikeys
 # import Thread to be able to run concurrently
 from threading import Thread
 # randint for the tweet interval

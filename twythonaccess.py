@@ -7,7 +7,7 @@ import time
 from twython import Twython
 
 # import the api keys
-import apikeys
+from . import apikeys
 
 
 
