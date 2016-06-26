@@ -152,7 +152,7 @@ def tweet_loop():
             print("has slept for " + str(sleep_minutes) + " minutes")
             
             # temporary sleep
-            time.sleep(60*60)
+            #time.sleep(60*60)
 
             # update the users followers
             users.check_new_followers()
